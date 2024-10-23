@@ -9,16 +9,16 @@ public class Hair : MonoBehaviour
 
     public float lerpSpeed = 5f;
     public float maxDistance = .5f;
-    public float gravity = -.1f;
+    public float gravity = -.025f;
 
-    private PlayerMovement2D movement;
+    private PlayerMovement movement;
     private bool _ready = false;
 
     private void OnDestroy()
     {
         movement.hairGravity -= SetGravity;
     }
-    public void InitHair(PlayerMovement2D movement, Transform hairAnchor)
+    public void InitHair(PlayerMovement movement, Transform hairAnchor)
     {
         this.movement = movement;
 
