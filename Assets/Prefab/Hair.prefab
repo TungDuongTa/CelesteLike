@@ -134,8 +134,8 @@ MonoBehaviour:
   target: {fileID: 5903117706885366327}
   mainHairPart: 0
   lerpSpeed: 5
-  maxDistance: 0.2
-  gravity: -0.1
+  maxDistance: 0.1
+  gravity: -0.025
 --- !u!1 &2519372241683270404
 GameObject:
   m_ObjectHideFlags: 0
@@ -237,7 +237,7 @@ MonoBehaviour:
   mainHairPart: 0
   lerpSpeed: 5
   maxDistance: 0.2
-  gravity: -0.1
+  gravity: -0.025
 --- !u!1 &7939344974906873758
 GameObject:
   m_ObjectHideFlags: 0
@@ -339,4 +339,4 @@ MonoBehaviour:
   mainHairPart: 1
   lerpSpeed: 5
   maxDistance: 0.2
-  gravity: -0.1
+  gravity: -0.025
