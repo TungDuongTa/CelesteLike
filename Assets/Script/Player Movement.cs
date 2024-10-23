@@ -8,6 +8,13 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Hair")]
+    public Transform hairAnchor;
+    public GameObject hair;
+
+    public hairDelegate hairGravity;
+    public delegate void hairDelegate(float newGravity);
+    [Header("Input")]
     //private PlayerAnimation playerState;
     private Rigidbody2D rb;
     public float xRaw;
@@ -86,6 +93,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void Start()
     {
+        CreateHair();
         //playerState = GetComponent<PlayerAnimation>();
         isFacingRight = true;
         rb = GetComponent<Rigidbody2D>();
@@ -263,7 +271,11 @@ public class PlayerMovement : MonoBehaviour
             transform.localScale = scale;
             if (groundTime > 0)
             {
+                hairGravity?.Invoke(-.025f);
                 //dust.Play();
+            }
+            else {
+                hairGravity?.Invoke(-.025f);
             }
         }
 
@@ -588,6 +600,14 @@ public class PlayerMovement : MonoBehaviour
             transform.position - innerRayCastOffSet + Vector3.up * topRayCastLength + Vector3.left * topRayCastLength);
         Gizmos.DrawLine(transform.position + innerRayCastOffSet + Vector3.up * topRayCastLength,
             transform.position + innerRayCastOffSet + Vector3.up * topRayCastLength + Vector3.right * topRayCastLength);
+    }
+    public void CreateHair()
+    {
+        GameObject obj = Instantiate(hair);
+        foreach (Transform child in obj.transform)
+        {
+            child.GetComponent<Hair>().InitHair(this, hairAnchor);
+        }
     }
 
 }
