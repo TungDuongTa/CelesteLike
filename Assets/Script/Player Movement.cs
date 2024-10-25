@@ -1,6 +1,7 @@
 using Cinemachine;
 //using DG.Tweening;
 using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -86,6 +87,7 @@ public class PlayerMovement : MonoBehaviour
     //public ParticleSystem dust;
     public float normalGravity;
     public bool isBound;
+    private Vector3 originalScale;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -93,6 +95,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void Start()
     {
+        originalScale = transform.localScale;
         CreateHair();
         //playerState = GetComponent<PlayerAnimation>();
         isFacingRight = true;
@@ -266,9 +269,13 @@ public class PlayerMovement : MonoBehaviour
         if (isFacingRight && xRaw < 0 || !isFacingRight && xRaw > 0)
         {
             isFacingRight = !isFacingRight;
-            Vector3 scale = transform.localScale;
-            scale.x *= -1;
-            transform.localScale = scale;
+            //Vector3 scale = transform.localScale;
+            //scale.x *= -1;
+            //transform.localScale = scale;
+            // Flip the character by inverting the X scale while preserving squash/stretch
+            // Flip the character’s X-axis by multiplying with -1, preserving squash/stretch effect
+            UpdateScaleForFlip();
+           
             if (groundTime > 0)
             {
                 hairGravity?.Invoke(-.025f);
@@ -279,6 +286,12 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
+    }
+    // A separate method to update the scale correctly for flip
+    private void UpdateScaleForFlip()
+    {
+        float newScaleX = Mathf.Abs(originalScale.x) * (isFacingRight ? 1 : -1);
+        transform.localScale = new Vector3(newScaleX, transform.localScale.y, transform.localScale.z);
     }
     //private void LeaveShadow()
     //{
@@ -402,7 +415,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-
+        PlaySquashAnimation();
         groundTime = 0;
         jumpBufferTime = 0;
         if (isTryingToJumpDuringDash)
@@ -608,6 +621,37 @@ public class PlayerMovement : MonoBehaviour
         {
             child.GetComponent<Hair>().InitHair(this, hairAnchor);
         }
+    }
+    private void PlaySquashAnimation()
+    {
+        // Apply squash effect: Wider horizontally, shorter vertically
+        float newScaleX = Mathf.Abs(originalScale.x) * (isFacingRight ? 1 : -1);
+        transform.localScale = new Vector3(newScaleX * 1.2f, 0.7f, 1f);
+
+        // Start coroutine to restore the scale smoothly
+        StartCoroutine(RestoreScale());
+    }
+
+    private IEnumerator RestoreScale()
+    {
+        Vector3 targetScale = new Vector3(
+            Mathf.Abs(originalScale.x) * (isFacingRight ? 1 : -1),
+            originalScale.y,
+            originalScale.z
+        );
+
+        float duration = 0.1f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            transform.localScale = Vector3.Lerp(transform.localScale, targetScale, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Ensure the final scale is applied correctly
+        transform.localScale = targetScale;
     }
 
 }
