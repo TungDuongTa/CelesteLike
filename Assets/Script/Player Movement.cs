@@ -9,6 +9,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public ParticleSystem dust;
     [Header("Hair")]
     public Transform hairAnchor;
     public GameObject hair;
@@ -107,6 +108,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         normalGravity = _gravityScale;
         lastTimeSinceDashed += Time.deltaTime;
         groundTime -= Time.deltaTime;
@@ -141,7 +143,7 @@ public class PlayerMovement : MonoBehaviour
             if (jumpBufferTime > 0 && groundTime > 0 && !isJumping)
             {
                 Jump();
-                //dust.Play();
+                dust.Play();
                 isJumping = true;
                 isFalling = false;
                 isJumpCut = false;
@@ -171,6 +173,7 @@ public class PlayerMovement : MonoBehaviour
         }
         if (groundTime > 0)
         {
+
             isFalling = false;
         }
         if (groundTime > 0 && !isJumping && !isWallJumping)
@@ -279,7 +282,7 @@ public class PlayerMovement : MonoBehaviour
             if (groundTime > 0)
             {
                 hairGravity?.Invoke(-.025f);
-                //dust.Play();
+                dust.Play();
             }
             else {
                 hairGravity?.Invoke(-.025f);
